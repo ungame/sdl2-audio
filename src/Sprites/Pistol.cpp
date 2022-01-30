@@ -17,14 +17,14 @@ Pistol::Pistol(SDL_Renderer* renderer, Asset* asset, Sound* gunshot, int x, int 
   
     int row = 0;
     int frames = 1;
-    int speed = 1;
-    Animation* idle = new Animation(asset, "pistol_idle", row, frames, speed);
+    double frameDuration = 1.0f;
+    Animation* idle = new Animation(asset, "pistol_idle", row, frames, frameDuration);
     _animations[idle->getName()] = idle;
     _currentAnimation = idle->getName();
 
     frames = 12;
-    speed = 70;
-    Animation* shooting = new Animation(asset, "pistol_shooting", row, frames, speed);
+    frameDuration = 0.05f; // 50ms
+    Animation* shooting = new Animation(asset, "pistol_shooting", row, frames, frameDuration);
     _animations[shooting->getName()] = shooting;
 
     _frameData = new SDL_Rect;
@@ -38,20 +38,24 @@ void Pistol::update(Input* input)
 {
     if (input->isMouseLeftButtonDown() && _currentAnimation != "pistol_shooting")
     {
-        const std::chrono::duration<double> d = std::chrono::system_clock::now() - _lastShot;
+        // const std::chrono::duration<double> d = std::chrono::system_clock::now() - _lastShot;
 
-        if (d.count() >= 1)
-        {
-            _currentAnimation = "pistol_shooting";
-            _gunshot->play(false);
-        }
+        // if (d.count() >= 1)
+        // {
+        //     _currentAnimation = "pistol_shooting";
+        //     _gunshot->play(false);
+        // }
+
+        _currentAnimation = "pistol_shooting";
+        _gunshot->play(false);
 
     } else {
 
-        if (_animations[_currentAnimation]->isFinished() && _currentAnimation == "pistol_shooting")
+        if (_animations[_currentAnimation]->wasAnimated() >= 1 && _currentAnimation == "pistol_shooting")
         {
+            _animations[_currentAnimation]->reset();
             _currentAnimation = "pistol_idle";
-            _lastShot = std::chrono::system_clock::now();
+            // _lastShot = std::chrono::system_clock::now();
         } 
     }
 }

@@ -16,7 +16,8 @@ class Blood
         Blood(SDL_Renderer* renderer, Asset* asset, int x, int y);
         void update();
         void draw(SDL_Renderer* renderer);
-        inline bool isFinished() { return _animations[_currentAnimation]->isFinished(); }
+        inline bool wasAnimated() { return _animations[_currentAnimation]->wasAnimated() >= 1; }
+        inline void reset() { _animations[_currentAnimation]->reset(); }
 
     private:
         SDL_RendererFlip _flip;

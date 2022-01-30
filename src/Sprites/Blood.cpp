@@ -14,9 +14,9 @@ Blood::Blood(SDL_Renderer* renderer, Asset* asset, int x, int y)
     
     int row = 0;
     int frames = 14;
-    int speed = 50;
+    double frameDuration = 0.05f;
 
-    Animation* blood = new Animation(asset, "blood", row, frames, speed);
+    Animation* blood = new Animation(asset, "blood", row, frames, frameDuration);
     _animations[blood->getName()] = blood;
     _currentAnimation = blood->getName();
     

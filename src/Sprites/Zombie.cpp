@@ -17,11 +17,16 @@ Zombie::Zombie(SDL_Renderer* renderer, Asset* asset, Asset* blood, int x, int y)
 
     int row = 2;
     int frames = 8;
-    int speed = 100;
+    double frameDuration = 0.1;
 
-    Animation* walk = new Animation(asset, "zombie_walk", row, frames, speed); 
+    Animation* walk = new Animation(asset, "zombie_walk", row, frames, frameDuration); 
     _animations[walk->getName()] = walk;
     _currentAnimation = walk->getName();
+
+    frameDuration = 0.15;
+    bool repeat = false;
+    Animation* death = new Animation(asset, "zombie_death", 5, frames, frameDuration, repeat); 
+    _animations[death->getName()] = death;
 
     _frameData = new SDL_Rect;
     _frameData->w = asset->getWidth() / 13;
@@ -36,13 +41,15 @@ void Zombie::update(Pistol* pistol)
 {
     if (pistol->isShooting())
     {
-        SDL_Log("Zombie: Ai!");
         _wasShot = true;
-    } else {
-        if (_blood->isFinished())
+    } 
+    else 
+    {
+        if (_blood->wasAnimated())
         {
-            SDL_Log("Zombie: Cérebro!");
             _wasShot = false;
+            _blood->reset();
+            _currentAnimation = "zombie_death";
         }
     }
 }
@@ -50,5 +57,6 @@ void Zombie::update(Pistol* pistol)
 void Zombie::draw(SDL_Renderer* renderer)
 {
     _animations[_currentAnimation]->animate(renderer, _frameData, _scale, _flip);
-    if (_wasShot) _blood->draw(renderer);
+    
+    if (_wasShot && _currentAnimation != "zombie_death") _blood->draw(renderer);
 }

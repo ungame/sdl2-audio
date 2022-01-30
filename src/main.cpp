@@ -49,7 +49,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     if (renderer == nullptr)
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "sdl create renderer failed: %s", SDL_GetError());
